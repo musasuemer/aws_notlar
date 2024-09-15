@@ -1,1 +1,1 @@
-# aws_notlar
+# clarusway-aws-devops-DE-tr-09

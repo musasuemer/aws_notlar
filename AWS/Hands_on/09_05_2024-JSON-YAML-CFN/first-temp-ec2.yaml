@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  This is temp launches an ec2 instance with a SG which allows SSH.
+Resources:
+  CFNInstance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: ami-0f403e3180720dd7e
+      InstanceType: t2.micro
+      KeyName: guile # change keypair name
+      SecurityGroups: 
+        - !Ref CFNSSHSecGr
+      Tags: 
+        - Key: Name
+          Value: CFN-Instance
+
+  CFNSSHSecGr:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allows SSH # Required
+      SecurityGroupIngress: 
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+
+      
+    
