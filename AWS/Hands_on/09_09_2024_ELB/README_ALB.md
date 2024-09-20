@@ -336,6 +336,6 @@ sudo systemctl status httpd
   - 2 Instances
   - Target Group (optional)
   - Sec. Group (optional),
-  - Launch Template (optional)...
+  - Launch Template (optional).
                                             
 
