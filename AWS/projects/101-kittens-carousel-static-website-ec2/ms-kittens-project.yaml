@@ -1,0 +1,74 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: |
+  This CloudFormation Template was written for running Kittens Carousel Static Website on EC2.
+  Kittens Carousel Static Website will be deployed on Amazon Linux 2023 (latestamiid) EC2 Instance with
+  custom security group which allows http connections on port 80 and ssh port 22 from
+  anywhere. Kittens Carousel Static Website is downloaded from my Public Github repository,
+  then deployed on Apache Web Server.
+  
+Parameters:
+  KeyPair:
+    Description: Select your keypair
+    Type: AWS::EC2::KeyPair::KeyName
+    Default: first_key
+  
+  InstanceType:
+    Description: Select your instance type 
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+         - t2.micro
+         - t3.micro
+  
+  LatestAmiId:
+    Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
+    Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+
+
+Resources:
+  MySecGrp:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allows SSH and HTTP # Required
+      SecurityGroupIngress: 
+        - CidrIp: 0.0.0.0/0
+          FromPort: 22
+          IpProtocol: tcp
+          ToPort: 22
+        - CidrIp: 0.0.0.0/0
+          FromPort: 80
+          IpProtocol: tcp
+          ToPort: 80  
+
+  WebServerKittens:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !Ref LatestAmiId
+      InstanceType: !Ref InstanceType
+      KeyName: !Ref KeyPair
+      SecurityGroupIds: 
+        - !Ref MySecGrp
+      Tags: 
+        - Key: Name
+          Value: !Sub Web Server of ${AWS::StackName}
+      UserData:
+       Fn::Base64: |
+        #! /bin/bash
+        yum update -y
+        yum install httpd -y
+        FOLDER="https://raw.githubusercontent.com/musasuemer/aws_notlar/refs/heads/main/AWS/projects/101-kittens-carousel-static-website-ec2/static-web"
+        cd /var/www/html
+        wget $FOLDER/index.html
+        wget $FOLDER/cat0.jpg
+        wget $FOLDER/cat1.jpg
+        wget $FOLDER/cat2.jpg
+        wget $FOLDER/cat3.png
+        systemctl start httpd
+        systemctl enable httpd
+
+  
+Outputs:
+  WebSiteURL:
+    Value: !Sub
+    - http://${PublicAddress}
+    - PublicAddress: !GetAtt WebServerKittens.PublicDnsName
