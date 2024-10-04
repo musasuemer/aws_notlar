@@ -20,9 +20,9 @@ with app.app_context():
         ("gokhan", "gokhan@google.com"),
         ("musa", "musa@bmw.com"),
         ("abdullah", "abdullah@mercedes.com"),
-	    ("gulay", "gulay@porche.com")
-        ("sumeyra", "sumeyra@microsoft.com") 
-        ("ozan", "ozan@porche.com")
+	    ("gulay", "gulay@porche.com"),
+        ("sumeyra", "sumeyra@microsoft.com"), 
+        ("ozan", "ozan@porche.com"),
         ("ahmet", "ahmet@huwaei.com");
         """)
     db.session.execute(drop_table)
@@ -84,7 +84,7 @@ def add_email():
 
 # - Add a statement to run the Flask application which can be reached from any host on port 80.
 if __name__=='__main__':
-    app.run(debug=True)
-    #app.run(host='0.0.0.0', port=8080)
+    #app.run(debug=True)
+    app.run(host='0.0.0.0', port=80)
 
 # https://flask-sqlalchemy.palletsprojects.com/en/2.x/config/
